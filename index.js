@@ -22,20 +22,36 @@ async function run() {
         const partsCollection = client.db('products').collection("parts");
 
         //provide home page products
-        app.get('/parts', async (req, res) => {
+        app.get('/homePageProducts', async (req, res) => {
+            console.log(req.query);
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
             const query = {};
             const cursor = partsCollection.find(query);
-            const parts = await cursor.limit(6).sort({ _id: 1 }).toArray();
-            res.send(parts);
+            let homePageProducts;
+
+            if (page || size) {
+                homePageProducts = await cursor.skip(page * size).limit(size).toArray();
+            }
+            else {
+                homePageProducts = await cursor.toArray();
+            }
+            res.send(homePageProducts);
         })
 
         //provide all product count
         app.get('/productCount', async (req, res) => {
+            const count = await partsCollection.estimatedDocumentCount();
+            console.log(count);
+            res.send({ count });
+        })
+
+        //get all products in product page
+        app.get('/allProducts', async (req, res) => {
             const query = {};
             const cursor = partsCollection.find(query);
-            const count = await cursor.count();
-            console.log(count);
-            res.json(count);
+            const allProducts = await cursor.toArray();
+            res.send(allProducts);
         })
 
     }
