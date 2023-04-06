@@ -14,6 +14,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 async function run() {
+    
     try {
         //mongodb connection
         await client.connect();
@@ -23,7 +24,6 @@ async function run() {
 
         //provide home page products
         app.get('/homePageProducts', async (req, res) => {
-            console.log(req.query);
             const page = parseInt(req.query.page);
             const size = parseInt(req.query.size);
             const query = {};
