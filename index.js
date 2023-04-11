@@ -21,6 +21,7 @@ async function run() {
 
         //mongodb collections
         const partsCollection = client.db('products').collection("parts");
+        const orders = client.db('products').collection("orders");
 
         //provide home page products
         app.get('/homePageProducts', async (req, res) => {
@@ -52,6 +53,11 @@ async function run() {
             const cursor = partsCollection.find(query);
             const allProducts = await cursor.toArray();
             res.send(allProducts);
+        })
+
+        //to order a product 
+        app.post('/order', (req, res)=>{
+            
         })
 
     }
