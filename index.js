@@ -56,8 +56,10 @@ async function run() {
         })
 
         //to order a product 
-        app.post('/order', (req, res)=>{
-            
+        app.post('/order', async (req, res)=>{
+            const body = req.body;
+            const result = await orders.insertOne(body)
+            res.send(result);
         })
 
     }
