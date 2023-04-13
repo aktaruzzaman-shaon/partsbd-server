@@ -63,10 +63,12 @@ async function run() {
         })
 
         //find ordered products
-        app.get('/orders/:email', async (req, res) => {
-            const query = req.params.email;
-            const result = await orders.find(query);
-            res.send(result);
+        app.get('/orders', async (req, res) => {
+            const mail = req.query.mail;
+            const query = { mail: mail };
+            const cursor = orders.find(query);
+            const orderedProducts = await cursor.toArray();
+            res.send(orderedProducts);
         })
 
     }
