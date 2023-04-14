@@ -22,6 +22,7 @@ async function run() {
         //mongodb collections
         const partsCollection = client.db('products').collection("parts");
         const orders = client.db('products').collection("orders");
+        const users = client.db('products').collection("users");
 
         //provide home page products
         app.get('/homePageProducts', async (req, res) => {
@@ -43,7 +44,6 @@ async function run() {
         //provide all product count
         app.get('/productCount', async (req, res) => {
             const count = await partsCollection.estimatedDocumentCount();
-            console.log(count);
             res.send({ count });
         })
 
@@ -69,6 +69,19 @@ async function run() {
             const cursor = orders.find(query);
             const orderedProducts = await cursor.toArray();
             res.send(orderedProducts);
+        })
+
+        //insert or update user in db
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const user = req.body;
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user
+            }
+            const result = await users.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
 
     }
