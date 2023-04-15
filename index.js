@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -13,6 +14,20 @@ app.use(express.json());
 const uri = "mongodb+srv://partsbd:mV1PncQ3MDPiybEX@cluster0.uwk9cua.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+function verifyJWT(req, res, next) {
+    const authorizationToken = req.headers.authorization;
+    if (!authorizationToken) {
+        return res.status(401).send({ message: "Unauthorized Access" });
+    }
+    const token = authorizationToken.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err) {
+            return res.status(403).send({ message: 'Forbidden access' })
+        }
+        req.decoded = decoded;
+        next();
+    })
+}
 
 async function run() {
 
@@ -64,12 +79,19 @@ async function run() {
         })
 
         //find ordered products
-        app.get('/orders', async (req, res) => {
+        app.get('/orders', verifyJWT, async (req, res) => {
             const mail = req.query.mail;
-            const query = { mail: mail };
-            const cursor = orders.find(query);
-            const orderedProducts = await cursor.toArray();
-            res.send(orderedProducts);
+            const decodedEmail = req.decoded.email;
+            if (decodedEmail === mail) {
+                const query = { mail: mail };
+                const cursor = orders.find(query);
+                const orderedProducts = await cursor.toArray();
+                return res.send(orderedProducts);
+            }
+            else {
+                return res.status(403).send({ message: ' forbidden access' });
+            }
+
         })
 
         //insert or update user in db
@@ -82,7 +104,7 @@ async function run() {
                 $set: user
             }
             const result = await users.updateOne(filter, updateDoc, options);
-            const token = jwt.sign({ email: email }, 'shaon', { expiresIn: '1h' });
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
             res.send({ result, token });
         })
 
