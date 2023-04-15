@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -81,7 +82,8 @@ async function run() {
                 $set: user
             }
             const result = await users.updateOne(filter, updateDoc, options);
-            res.send(result);
+            const token = jwt.sign({ email: email }, 'shaon', { expiresIn: '1h' });
+            res.send({ result, token });
         })
 
     }
