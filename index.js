@@ -108,6 +108,12 @@ async function run() {
             res.send({ result, token });
         })
 
+        //getting all users from db
+        app.get('/user', async (req, res) => {
+            const user = await users.find().toArray();
+            res.send(user);
+        })
+
     }
     finally {
         // await client.close();
