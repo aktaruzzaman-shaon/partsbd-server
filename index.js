@@ -1,10 +1,11 @@
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config()
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middleware
 app.use(cors());
@@ -72,9 +73,18 @@ async function run() {
         })
 
         //to order a product 
-        app.post('/order', async (req, res) => {
+        app.put('/order/:id', async (req, res) => {
+            const productId = req.params.id;
+            console.log(productId);
+            const filter = { _id: productId};
+            console.log(filter);
+            const options = { upsert: true };
             const body = req.body;
-            const result = await orders.insertOne(body)
+            console.log(body)
+            const updatedDoc = {
+                $set: body
+            }
+            const result = await orders.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
 
@@ -91,7 +101,6 @@ async function run() {
             else {
                 return res.status(403).send({ message: ' forbidden access' });
             }
-
         })
 
         //insert or update user in db
