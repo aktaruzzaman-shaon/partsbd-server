@@ -76,7 +76,7 @@ async function run() {
         app.put('/order/:id', async (req, res) => {
             const productId = req.params.id;
             console.log(productId);
-            const filter = { _id: productId};
+            const filter = { _id: productId };
             console.log(filter);
             const options = { upsert: true };
             const body = req.body;
@@ -115,6 +115,17 @@ async function run() {
             const result = await users.updateOne(filter, updateDoc, options);
             const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
             res.send({ result, token });
+        })
+
+        //make admin api
+        app.put('/user/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { role: "admin" }
+            }
+            const result = await users.updateOne(filter, updateDoc);
+            res.send(result);
         })
 
         //getting all users from db
