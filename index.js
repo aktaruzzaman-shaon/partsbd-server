@@ -128,6 +128,16 @@ async function run() {
             res.send(result);
         })
 
+        //findout admin user
+        app.get('/user/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email }
+            const result = await users.findOne(filter);
+            const adminValue = result.role === 'admin';
+            console.log(adminValue);
+            res.send({ admin: adminValue });
+        })
+
         //getting all users from db
         app.get('/user', async (req, res) => {
             const user = await users.find().toArray();
