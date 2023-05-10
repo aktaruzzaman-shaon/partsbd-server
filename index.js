@@ -138,6 +138,14 @@ async function run() {
             res.send({ admin: adminValue });
         })
 
+        //upload products
+        app.post('/parts', async (req, res) => {
+            const productData = req.body;
+            const result = await partsCollection.insertOne(productData);
+            console.log(result);
+            res.send(result);
+        })
+
         //getting all users from db
         app.get('/user', async (req, res) => {
             const user = await users.find().toArray();
