@@ -139,7 +139,7 @@ async function run() {
         })
 
         //upload products
-        app.post('/parts', async (req, res) => {
+        app.post('/addParts', async (req, res) => {
             const productData = req.body;
             const result = await partsCollection.insertOne(productData);
             console.log(result);
@@ -151,6 +151,23 @@ async function run() {
             const user = await users.find().toArray();
             res.send(user);
         })
+
+        //remove products
+        app.delete('/deleteProducts/:_id', async (req, res) => {
+            const productId = req.params._id;
+            console.log(productId);
+            const o_id = new ObjectId(productId);
+            const query = ({ _id: o_id })
+            console.log(query);
+            const result = await partsCollection.deleteOne(query);
+            console.log("id", productId, query);
+            res.send(result);
+        })
+
+        // var ObjectId = require('mongodb').ObjectId;
+        // var id = req.params.gonderi_id;
+        // var o_id = new ObjectId(id);
+        // db.test.find({ _id: o_id })
 
     }
     finally {
