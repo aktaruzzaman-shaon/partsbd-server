@@ -165,21 +165,7 @@ async function run() {
         })
 
         //upload user delivery information
-        // app.put('/addDeliveryInfo/:email', async (req, res) => {
-        //     const userEmail = req.params.email;
-        //     const filter = { email: userEmail }
-        //     const userData = req.body;
-        //     console.log(userData)
-        //     const options = { upsert: true };
-        //     const updateDoc = {
-        //         $set: userData
-        //     }
-        //     const result = users.updateOne(filter, updateDoc, options)
-        //     res.send(result);
-        // })
-
-         //upload user delivery information
-         app.put('/addDeliveryInfo/:email', async (req, res) => {
+        app.put('/addDeliveryInfo/:email', async (req, res) => {
             const userEmail = req.params.email;
             const filter = { email: userEmail }
             const userData = req.body;
@@ -191,7 +177,6 @@ async function run() {
             const result = users.updateOne(filter, updateDoc, options)
             res.send(result);
         })
-
 
     }
     finally {
