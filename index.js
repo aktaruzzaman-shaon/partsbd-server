@@ -164,10 +164,19 @@ async function run() {
             res.send(result);
         })
 
-        // var ObjectId = require('mongodb').ObjectId;
-        // var id = req.params.gonderi_id;
-        // var o_id = new ObjectId(id);
-        // db.test.find({ _id: o_id })
+        //upload user delivery information
+        app.put('/addDeliveryInfo/:email', async (req, res) => {
+            const userEmail = req.params.email;
+            const filter = { email: userEmail }
+            const userData = req.body;
+            console.log(userData)
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: userData
+            }
+            const result = users.updateOne(filter, updateDoc, options)
+            res.send(result);
+        })
 
     }
     finally {
