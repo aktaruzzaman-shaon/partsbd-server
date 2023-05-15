@@ -163,12 +163,6 @@ async function run() {
             console.log("id", productId, query);
             res.send(result);
         })
-
-        // var ObjectId = require('mongodb').ObjectId;
-        // var id = req.params.gonderi_id;
-        // var o_id = new ObjectId(id);
-        // db.test.find({ _id: o_id })
-
     }
     finally {
         // await client.close();
