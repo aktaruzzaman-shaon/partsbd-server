@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
+const stripe = require('stripe')("sk_test_51MlPmmJ0Iao4xBhnATmgcfAmMYaJOGJBufd3bYoS4hdSf6bZrGYR85f3ACfPrUtQVeMM6Y9LCAcsjo4X9wbniZkJ00KHoFnFj3")
 
 require('dotenv').config()
 const cors = require('cors');
