@@ -165,16 +165,6 @@ async function run() {
             res.send(result);
         })
 
-        //find single product
-        app.get('/allProducts/:searchProductName', async (req, res) => {
-            const productName = req.params.searchProductName;
-            console.log(productName);
-            const query = ({ name: productName })
-            const cursor = partsCollection.find(query);
-            const searchedProduct = await cursor.toArray();
-            res.send(searchedProduct);
-        })
-
         //upload user delivery information
         app.put('/addDeliveryInfo/:email', async (req, res) => {
             const userEmail = req.params.email;
