@@ -41,6 +41,7 @@ async function run() {
         const partsCollection = client.db('products').collection("parts");
         const orders = client.db('products').collection("orders");
         const users = client.db('products').collection("users");
+        const brandImage = client.db('products').collection("brandImage");
 
         //provide home page products
         app.get('/homePageProducts', async (req, res) => {
@@ -145,6 +146,22 @@ async function run() {
             const result = await partsCollection.insertOne(productData);
             console.log(result);
             res.send(result);
+        })
+
+        //upload Prodcut Brand image
+        app.post('/addBrand', async (req, res) => {
+            const brandImageUrl = req.body;
+            const result = await brandImage.insertOne(brandImageUrl);
+            console.log(result);
+            res.send(result);
+        })
+
+        //get product brand image
+        app.get('/partsBrand', async (req, res) => {
+            const cursor = brandImage.find({});
+            const brandImageAll = await cursor.toArray();
+            res.send(brandImageAll);
+
         })
 
         //getting all users from db
