@@ -44,20 +44,20 @@ async function run() {
         const brandImage = client.db('products').collection("brandImage");
 
         //provide home page products
-        app.get('/homePageProducts', async (req, res) => {
+        app.get('/allProducts', async (req, res) => {
             const page = parseInt(req.query.page);
             const size = parseInt(req.query.size);
             const query = {};
             const cursor = partsCollection.find(query);
-            let homePageProducts;
+            let allProducts;
 
             if (page || size) {
-                homePageProducts = await cursor.skip(page * size).limit(size).toArray();
+                allProducts = await cursor.skip(page * size).limit(size).toArray();
             }
             else {
-                homePageProducts = await cursor.toArray();
+                allProducts = await cursor.toArray();
             }
-            res.send(homePageProducts);
+            res.send(allProducts);
         })
 
         //provide all product count
@@ -66,12 +66,12 @@ async function run() {
             res.send({ count });
         })
 
-        //get all products in product page
-        app.get('/allProducts', async (req, res) => {
+        // get home page products in product page
+        app.get('/homePageProducts', async (req, res) => {
             const query = {};
             const cursor = partsCollection.find(query);
-            const allProducts = await cursor.toArray();
-            res.send(allProducts);
+            const homePageProducts = await cursor.toArray();
+            res.send(homePageProducts);
         })
 
         //to order a product 
