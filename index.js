@@ -221,6 +221,9 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send("THis is home page of partsbd backend");
 })
+app.get('*', (req, res) => {
+    res.send("No route found");
+})
 
 app.listen(port, () => {
     console.log("Serve is running");
