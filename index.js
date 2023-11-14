@@ -35,7 +35,7 @@ async function run() {
 
     try {
         //mongodb connection
-        await client.connect();
+        client.connect();
 
         //mongodb collections
         const partsCollection = client.db('products').collection("parts");
@@ -71,6 +71,7 @@ async function run() {
             const query = {};
             const cursor = partsCollection.find(query);
             const homePageProducts = await cursor.toArray();
+            console.log(homePageProducts)
             res.send(homePageProducts);
         })
 
