@@ -106,6 +106,13 @@ async function run() {
             }
         })
 
+        //make order
+        app.post('/makeOrder', verifyJWT, async (req, res) => {
+            const orderedData = req.body;
+            const result = await orders.insertOne(orderedData);
+            res.send(result);
+        })
+
         //insert or update user in db
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
@@ -208,9 +215,7 @@ async function run() {
                 payment_method_types: ['card']
             });
             res.send({ clientSecret: paymentIntent.client_secret });
-
         })
-
     }
     finally {
         // await client.close();
