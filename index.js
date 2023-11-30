@@ -47,13 +47,16 @@ async function run() {
         app.get('/allProducts', async (req, res) => {
             const page = parseInt(req.query.page);
             const size = parseInt(req.query.size);
+            const category = req.query.category;
             const query = {};
             const cursor = partsCollection.find(query);
+
             let allProducts;
 
             if (page || size) {
                 allProducts = await cursor.skip(page * size).limit(size).toArray();
             }
+            else
             else {
                 allProducts = await cursor.toArray();
             }
@@ -78,12 +81,10 @@ async function run() {
         //to order a product 
         app.put('/order/:id', async (req, res) => {
             const productId = req.params.id;
-            console.log(productId);
             const filter = { _id: productId };
-            console.log(filter);
             const options = { upsert: true };
             const body = req.body;
-            console.log(body)
+            // console.log(body)
             const updatedDoc = {
                 $set: body
             }
@@ -107,7 +108,7 @@ async function run() {
         })
 
         //make order
-        app.post('/makeOrder', verifyJWT, async (req, res) => {
+        app.post('/makeOrder', async (req, res) => {
             const orderedData = req.body;
             const result = await orders.insertOne(orderedData);
             res.send(result);
