@@ -52,14 +52,24 @@ async function run() {
             const cursor = partsCollection.find(query);
 
             let allProducts;
-
-            if (page || size) {
-                allProducts = await cursor.skip(page * size).limit(size).toArray();
+            console.log(page,size,category)
+            if (page || size || category) {
+                if (category !== "allproducts" ) {
+                    const query = { category: category };
+                    const cursor = partsCollection.find(query);
+                    allProducts = await cursor.toArray();
+                    console.log('entered')
+                }
+                else {
+                    
+                    allProducts = await cursor.skip(page * size).limit(size).toArray();
+                }
+                
             }
-            else
             else {
                 allProducts = await cursor.toArray();
             }
+
             res.send(allProducts);
         })
 
@@ -74,7 +84,7 @@ async function run() {
             const query = {};
             const cursor = partsCollection.find(query);
             const homePageProducts = await cursor.toArray();
-            console.log(homePageProducts)
+
             res.send(homePageProducts);
         })
 
