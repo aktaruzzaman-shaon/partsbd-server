@@ -52,22 +52,26 @@ async function run() {
             const cursor = partsCollection.find(query);
 
             let allProducts;
-            console.log(page,size,category)
-            if (page || size || category) {
-                if (category !== "allproducts" ) {
-                    const query = { category: category };
-                    const cursor = partsCollection.find(query);
-                    allProducts = await cursor.toArray();
-                    console.log('entered')
+            console.log(page, size, category)
+
+            // for page and size search
+            if (page || size) {
+                allProducts = await cursor.skip(page * size).limit(size).toArray();
+            }
+
+            // for category search
+            if (category) {
+                if (category === "allproducts") {
+                    const cursor = partsCollection.find();
+                    allProducts =await cursor.toArray();
+                    console.log('find all products')
+                    console.log(allProducts)
                 }
                 else {
-                    
-                    allProducts = await cursor.skip(page * size).limit(size).toArray();
+                    const query = { category: category };
+                    allProducts = await partsCollection.find(query).toArray();
+
                 }
-                
-            }
-            else {
-                allProducts = await cursor.toArray();
             }
 
             res.send(allProducts);
