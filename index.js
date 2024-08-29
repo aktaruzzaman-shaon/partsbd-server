@@ -35,7 +35,7 @@ async function run() {
 
     try {
         //mongodb connection
-        client.connect();
+        await client.connect();
 
         //mongodb collections
         const partsCollection = client.db('products').collection("parts");
@@ -63,7 +63,7 @@ async function run() {
             if (category) {
                 if (category === "allproducts") {
                     const cursor = partsCollection.find();
-                    allProducts =await cursor.toArray();
+                    allProducts = await cursor.toArray();
                     console.log('find all products')
                     console.log(allProducts)
                 }
@@ -72,6 +72,10 @@ async function run() {
                     allProducts = await partsCollection.find(query).toArray();
 
                 }
+            }
+
+            else {
+                allProducts = await partsCollection.find(query).toArray();
             }
 
             res.send(allProducts);
@@ -88,7 +92,6 @@ async function run() {
             const query = {};
             const cursor = partsCollection.find(query);
             const homePageProducts = await cursor.toArray();
-
             res.send(homePageProducts);
         })
 
@@ -220,17 +223,56 @@ async function run() {
         })
 
         //processing payment 
+        // app.post('/createPaymentIntent', async (req, res) => {
+        //     const { price } = req.body;
+        //     console.log(price)
+        //     const amount = price * 100;
+        //     const paymentIntent = await stripe.paymentIntents.create({
+        //         amount: amount,
+        //         currency: 'usd',
+        //         payment_method_types: ['card']
+        //     });
+        //     res.send({ clientSecret: paymentIntent.client_secret });
+        // })
+
+
         app.post('/createPaymentIntent', async (req, res) => {
-            const { price } = req.body;
-            console.log(price)
-            const amount = price * 100;
-            const paymentIntent = await stripe.paymentIntents.create({
-                amount: amount,
-                currency: 'usd',
-                payment_method_types: ['card']
-            });
-            res.send({ clientSecret: paymentIntent.client_secret });
+
+            try {
+                const { price } = req.body;
+                const amount = price * 100;
+                console.log(price)
+                const session = await stripe.checkout.sessions.create({
+                    payment_method_types: ["card"],
+                    mode: "payment",
+                    line_items: {
+                        currency: 'usd',
+                        unit_amount: amount
+                    }
+                })
+                console.log(session)
+                res.json({ "data": "payment received" })
+            } catch (error) {
+                res.status(500)
+            }
+
+
+
+
+
+            // const paymentIntent = await stripe.paymentIntents.create({
+            //     amount: amount,
+            //     currency: 'usd',
+            //     payment_method_types: ['card']
+            // });
+            // res.send({ clientSecret: paymentIntent.client_secret });
         })
+
+
+
+
+
+
     }
     finally {
         // await client.close();
