@@ -3,17 +3,19 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const stripe = require('stripe')("sk_test_51MlPmmJ0Iao4xBhnATmgcfAmMYaJOGJBufd3bYoS4hdSf6bZrGYR85f3ACfPrUtQVeMM6Y9LCAcsjo4X9wbniZkJ00KHoFnFj3")
 
+//mongodb uri and client 
+const uri = "mongodb+srv://partsbd:mV1PncQ3MDPiybEX@cluster0.uwk9cua.mongodb.net/?retryWrites=true&w=majority";
+
 require('dotenv').config()
 const cors = require('cors');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
-//mongodb uri and client 
-const uri = "mongodb+srv://partsbd:mV1PncQ3MDPiybEX@cluster0.uwk9cua.mongodb.net/?retryWrites=true&w=majority";
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next) {
@@ -35,7 +37,7 @@ async function run() {
 
     try {
         //mongodb connection
-        await client.connect();
+        // client.connect();
 
         //mongodb collections
         const partsCollection = client.db('products').collection("parts");
